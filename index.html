@@ -936,10 +936,10 @@
             <div class="resume-content">
                 <p>Interested in learning more about my experience and qualifications? You can view or download my resume below.</p>
                 <div class="resume-options">
-                    <a href="./Minho_Kim_Resume.pdf" class="resume-btn view-btn" target="_blank">
+                    <a href="Minho_Kim_Resume.pdf" class="resume-btn view-btn" target="_blank" onclick="window.open('Minho_Kim_Resume.pdf', '_blank')">
                         <i class="fas fa-eye"></i> View Resume
                     </a>
-                    <a href="./Minho_Kim_Resume.pdf" class="resume-btn download-btn" download="Minho_Kim_Resume.pdf">
+                    <a href="Minho_Kim_Resume.pdf" class="resume-btn download-btn" download="Minho_Kim_Resume.pdf" onclick="downloadResume()">
                         <i class="fas fa-download"></i> Download PDF
                     </a>
                 </div>
@@ -1236,6 +1236,16 @@
                     });
                 });
             }
+        }
+
+        // Resume download function
+        function downloadResume() {
+            const link = document.createElement('a');
+            link.href = 'Minho_Kim_Resume.pdf';
+            link.download = 'Minho_Kim_Resume.pdf';
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
         }
 
         // Keyboard navigation
