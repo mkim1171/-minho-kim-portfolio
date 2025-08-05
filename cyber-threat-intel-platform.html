@@ -1,0 +1,495 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CyberThreat Intel Hub - Community-Driven Threat Intelligence</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        body {
+            background: linear-gradient(135deg, #0f172a 0%, #1e293b 50%, #334155 100%);
+            min-height: 100vh;
+            color: #e2e8f0;
+        }
+        
+        .cyber-card {
+            background: rgba(15, 23, 42, 0.8);
+            backdrop-filter: blur(15px);
+            border: 1px solid rgba(59, 130, 246, 0.2);
+            transition: all 0.3s ease-in-out;
+        }
+        
+        .cyber-card:hover {
+            transform: translateY(-3px);
+            border-color: rgba(59, 130, 246, 0.4);
+            box-shadow: 0 10px 30px rgba(59, 130, 246, 0.2);
+        }
+        
+        .threat-level-critical { border-left-color: #ef4444; }
+        .threat-level-high { border-left-color: #f97316; }
+        .threat-level-medium { border-left-color: #eab308; }
+        .threat-level-low { border-left-color: #22c55e; }
+        
+        .hidden { display: none; }
+        
+        .cyber-glow {
+            box-shadow: 0 0 20px rgba(59, 130, 246, 0.3);
+        }
+        
+        .matrix-bg {
+            background-image: 
+                radial-gradient(circle at 25% 25%, rgba(59, 130, 246, 0.1) 0%, transparent 50%),
+                radial-gradient(circle at 75% 75%, rgba(16, 185, 129, 0.1) 0%, transparent 50%);
+        }
+        
+        .skill-progress {
+            background: linear-gradient(90deg, #3b82f6, #10b981);
+            height: 8px;
+            border-radius: 4px;
+            transition: width 0.5s ease;
+        }
+        
+        .achievement-badge {
+            background: linear-gradient(135deg, #3b82f6, #8b5cf6);
+            border: 2px solid rgba(59, 130, 246, 0.3);
+        }
+        
+        /* Animated elements */
+        @keyframes pulse-glow {
+            0%, 100% { box-shadow: 0 0 5px rgba(59, 130, 246, 0.3); }
+            50% { box-shadow: 0 0 20px rgba(59, 130, 246, 0.6); }
+        }
+        
+        .pulse-glow {
+            animation: pulse-glow 2s infinite;
+        }
+        
+        /* Custom scrollbar */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+        
+        ::-webkit-scrollbar-track {
+            background: rgba(15, 23, 42, 0.5);
+        }
+        
+        ::-webkit-scrollbar-thumb {
+            background: rgba(59, 130, 246, 0.5);
+            border-radius: 4px;
+        }
+        
+        ::-webkit-scrollbar-thumb:hover {
+            background: rgba(59, 130, 246, 0.7);
+        }
+    </style>
+</head>
+<body class="matrix-bg">
+    <div class="min-h-screen p-4">
+        <div class="max-w-7xl mx-auto">
+            <!-- Header -->
+            <div class="cyber-card p-8 rounded-xl mb-8 cyber-glow">
+                <div class="flex items-center justify-between mb-4">
+                    <div>
+                        <h1 class="text-4xl font-bold text-blue-400 mb-2">CyberThreat Intel Hub</h1>
+                        <p class="text-gray-300 text-lg">Community-Driven Threat Intelligence Platform</p>
+                    </div>
+                    <div class="text-right">
+                        <div class="text-2xl font-bold text-green-400">Level 7</div>
+                        <div class="text-sm text-gray-400">Threat Analyst</div>
+                    </div>
+                </div>
+                <div class="flex items-center gap-4 text-sm">
+                    <span class="px-3 py-1 bg-blue-900/50 rounded-full text-blue-300">XP: 2,847</span>
+                    <span class="px-3 py-1 bg-green-900/50 rounded-full text-green-300">Threats Analyzed: 156</span>
+                    <span class="px-3 py-1 bg-purple-900/50 rounded-full text-purple-300">Community Rank: Top 5%</span>
+                </div>
+            </div>
+
+            <!-- Main Dashboard -->
+            <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-8">
+                <!-- Threat Feed -->
+                <div class="lg:col-span-2">
+                    <div class="cyber-card p-6 rounded-xl mb-6">
+                        <h2 class="text-2xl font-bold text-blue-400 mb-4 flex items-center gap-2">
+                            <span class="pulse-glow">🔴</span>
+                            Live Threat Feed
+                        </h2>
+                        <div class="space-y-4" id="threat-feed">
+                            <!-- Threat items will be populated here -->
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Skills & Achievements -->
+                <div class="space-y-6">
+                    <div class="cyber-card p-6 rounded-xl">
+                        <h3 class="text-xl font-bold text-blue-400 mb-4">Cyber Skills</h3>
+                        <div class="space-y-4">
+                            <div>
+                                <div class="flex justify-between text-sm mb-1">
+                                    <span>Malware Analysis</span>
+                                    <span>85%</span>
+                                </div>
+                                <div class="bg-gray-700 rounded-full h-2">
+                                    <div class="skill-progress rounded-full" style="width: 85%"></div>
+                                </div>
+                            </div>
+                            <div>
+                                <div class="flex justify-between text-sm mb-1">
+                                    <span>Network Forensics</span>
+                                    <span>72%</span>
+                                </div>
+                                <div class="bg-gray-700 rounded-full h-2">
+                                    <div class="skill-progress rounded-full" style="width: 72%"></div>
+                                </div>
+                            </div>
+                            <div>
+                                <div class="flex justify-between text-sm mb-1">
+                                    <span>Threat Hunting</span>
+                                    <span>68%</span>
+                                </div>
+                                <div class="bg-gray-700 rounded-full h-2">
+                                    <div class="skill-progress rounded-full" style="width: 68%"></div>
+                                </div>
+                            </div>
+                            <div>
+                                <div class="flex justify-between text-sm mb-1">
+                                    <span>Incident Response</span>
+                                    <span>91%</span>
+                                </div>
+                                <div class="bg-gray-700 rounded-full h-2">
+                                    <div class="skill-progress rounded-full" style="width: 91%"></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="cyber-card p-6 rounded-xl">
+                        <h3 class="text-xl font-bold text-blue-400 mb-4">Recent Achievements</h3>
+                        <div class="space-y-3">
+                            <div class="achievement-badge p-3 rounded-lg">
+                                <div class="text-sm font-semibold text-white">First Blood</div>
+                                <div class="text-xs text-gray-300">Identified 0-day vulnerability</div>
+                            </div>
+                            <div class="achievement-badge p-3 rounded-lg">
+                                <div class="text-sm font-semibold text-white">Threat Hunter</div>
+                                <div class="text-xs text-gray-300">Analyzed 50+ threats</div>
+                            </div>
+                            <div class="achievement-badge p-3 rounded-lg">
+                                <div class="text-sm font-semibold text-white">Community Leader</div>
+                                <div class="text-xs text-gray-300">Helped 25+ analysts</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Analysis Tools -->
+            <div class="cyber-card p-6 rounded-xl mb-8">
+                <h2 class="text-2xl font-bold text-blue-400 mb-6">Threat Analysis Tools</h2>
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+                    <button onclick="openTool('malware')" class="cyber-card p-4 rounded-lg text-center hover:bg-blue-900/20 transition-colors">
+                        <div class="text-2xl mb-2">🦠</div>
+                        <div class="font-semibold">Malware Analyzer</div>
+                        <div class="text-xs text-gray-400">Sandbox & Behavior Analysis</div>
+                    </button>
+                    <button onclick="openTool('network')" class="cyber-card p-4 rounded-lg text-center hover:bg-blue-900/20 transition-colors">
+                        <div class="text-2xl mb-2">🌐</div>
+                        <div class="font-semibold">Network Tracker</div>
+                        <div class="text-xs text-gray-400">Traffic Analysis & Monitoring</div>
+                    </button>
+                    <button onclick="openTool('ioc')" class="cyber-card p-4 rounded-lg text-center hover:bg-blue-900/20 transition-colors">
+                        <div class="text-2xl mb-2">🔍</div>
+                        <div class="font-semibold">IOC Scanner</div>
+                        <div class="text-xs text-gray-400">Indicators of Compromise</div>
+                    </button>
+                    <button onclick="openTool('forensics')" class="cyber-card p-4 rounded-lg text-center hover:bg-blue-900/20 transition-colors">
+                        <div class="text-2xl mb-2">🔬</div>
+                        <div class="font-semibold">Digital Forensics</div>
+                        <div class="text-xs text-gray-400">Memory & Disk Analysis</div>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Community Challenges -->
+            <div class="cyber-card p-6 rounded-xl mb-8">
+                <h2 class="text-2xl font-bold text-blue-400 mb-6">Active Challenges</h2>
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4" id="challenges">
+                    <!-- Challenges will be populated here -->
+                </div>
+            </div>
+
+            <!-- Analysis Modal -->
+            <div id="analysis-modal" class="hidden fixed inset-0 bg-black/50 backdrop-blur-sm z-50">
+                <div class="flex items-center justify-center min-h-screen p-4">
+                    <div class="cyber-card p-6 rounded-xl max-w-2xl w-full max-h-[90vh] overflow-y-auto">
+                        <div class="flex justify-between items-center mb-4">
+                            <h3 class="text-xl font-bold text-blue-400" id="modal-title">Threat Analysis</h3>
+                            <button onclick="closeModal()" class="text-gray-400 hover:text-white">✕</button>
+                        </div>
+                        <div id="modal-content">
+                            <!-- Modal content will be populated here -->
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Sample threat data (can be replaced with real API calls)
+        const threats = [
+            {
+                id: 1,
+                title: "New Ransomware Variant Detected",
+                description: "Sophisticated ransomware targeting healthcare systems with double extortion tactics",
+                severity: "critical",
+                timestamp: "2 hours ago",
+                ioc: "hash: a1b2c3d4e5f6...",
+                affected: "Healthcare, Finance",
+                analysis: "This ransomware uses advanced encryption and exfiltrates data before encryption. Analysis shows it's part of a larger campaign targeting critical infrastructure."
+            },
+            {
+                id: 2,
+                title: "APT Group Activity Spotted",
+                description: "Nation-state actors targeting government contractors with spear-phishing",
+                severity: "high",
+                timestamp: "4 hours ago",
+                ioc: "domain: malicious-gov.com",
+                affected: "Government, Defense",
+                analysis: "Advanced Persistent Threat group using sophisticated social engineering techniques. Multiple stages of attack with custom malware."
+            },
+            {
+                id: 3,
+                title: "Zero-Day in Popular Software",
+                description: "Critical vulnerability in widely-used business software",
+                severity: "high",
+                timestamp: "6 hours ago",
+                ioc: "CVE-2024-XXXX",
+                affected: "Enterprise",
+                analysis: "Remote code execution vulnerability affecting millions of users. Patch not yet available."
+            },
+            {
+                id: 4,
+                title: "Cryptocurrency Mining Botnet",
+                description: "Large-scale botnet using compromised IoT devices",
+                severity: "medium",
+                timestamp: "8 hours ago",
+                ioc: "IP: 192.168.1.100",
+                affected: "IoT, Home Networks",
+                analysis: "Botnet using default credentials to compromise IoT devices. Generating significant cryptocurrency mining revenue."
+            }
+        ];
+
+        const challenges = [
+            {
+                id: 1,
+                title: "Malware Reverse Engineering",
+                description: "Analyze the provided malware sample and identify its capabilities",
+                difficulty: "Hard",
+                reward: "500 XP",
+                participants: 47,
+                deadline: "3 days"
+            },
+            {
+                id: 2,
+                title: "Network Traffic Analysis",
+                description: "Identify suspicious patterns in network traffic logs",
+                difficulty: "Medium",
+                reward: "300 XP",
+                participants: 89,
+                deadline: "2 days"
+            },
+            {
+                id: 3,
+                title: "Threat Intelligence Report",
+                description: "Write a comprehensive report on recent APT activities",
+                difficulty: "Expert",
+                reward: "800 XP",
+                participants: 23,
+                deadline: "5 days"
+            }
+        ];
+
+        // Initialize the application
+        function init() {
+            // In a real implementation, this would fetch from threat intelligence APIs
+            // fetchThreatIntelligence();
+            renderThreatFeed();
+            renderChallenges();
+        }
+        
+        // Example function for real threat intelligence integration
+        async function fetchThreatIntelligence() {
+            try {
+                // Example API endpoints for real threat data:
+                // - AlienVault OTX API
+                // - VirusTotal API
+                // - ThreatFox API
+                // - MISP API
+                
+                // const response = await fetch('https://api.threatintel.com/feed');
+                // const realThreats = await response.json();
+                // threats = realThreats;
+                // renderThreatFeed();
+                
+                console.log('Real threat intelligence integration ready');
+            } catch (error) {
+                console.log('Using simulated data for demo purposes');
+            }
+        }
+
+        // Render threat feed
+        function renderThreatFeed() {
+            const feed = document.getElementById('threat-feed');
+            feed.innerHTML = threats.map(threat => `
+                <div class="cyber-card p-4 rounded-lg border-l-4 threat-level-${threat.severity} hover:bg-blue-900/10 transition-colors cursor-pointer" onclick="analyzeThreat(${threat.id})">
+                    <div class="flex justify-between items-start mb-2">
+                        <h4 class="font-semibold text-white">${threat.title}</h4>
+                        <span class="px-2 py-1 rounded text-xs font-medium ${
+                            threat.severity === 'critical' ? 'bg-red-900/50 text-red-300' :
+                            threat.severity === 'high' ? 'bg-orange-900/50 text-orange-300' :
+                            threat.severity === 'medium' ? 'bg-yellow-900/50 text-yellow-300' :
+                            'bg-green-900/50 text-green-300'
+                        }">${threat.severity.toUpperCase()}</span>
+                    </div>
+                    <p class="text-gray-300 text-sm mb-2">${threat.description}</p>
+                    <div class="flex items-center gap-4 text-xs text-gray-400">
+                        <span>🕒 ${threat.timestamp}</span>
+                        <span>🎯 ${threat.affected}</span>
+                        <span>🔍 ${threat.ioc}</span>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        // Render challenges
+        function renderChallenges() {
+            const challengesContainer = document.getElementById('challenges');
+            challengesContainer.innerHTML = challenges.map(challenge => `
+                <div class="cyber-card p-4 rounded-lg hover:bg-blue-900/10 transition-colors cursor-pointer" onclick="joinChallenge(${challenge.id})">
+                    <div class="flex justify-between items-start mb-2">
+                        <h4 class="font-semibold text-white">${challenge.title}</h4>
+                        <span class="px-2 py-1 rounded text-xs font-medium ${
+                            challenge.difficulty === 'Expert' ? 'bg-purple-900/50 text-purple-300' :
+                            challenge.difficulty === 'Hard' ? 'bg-red-900/50 text-red-300' :
+                            'bg-yellow-900/50 text-yellow-300'
+                        }">${challenge.difficulty}</span>
+                    </div>
+                    <p class="text-gray-300 text-sm mb-3">${challenge.description}</p>
+                    <div class="flex items-center justify-between text-xs text-gray-400">
+                        <span>💰 ${challenge.reward}</span>
+                        <span>👥 ${challenge.participants} participants</span>
+                        <span>⏰ ${challenge.deadline}</span>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        // Analyze threat
+        function analyzeThreat(threatId) {
+            const threat = threats.find(t => t.id === threatId);
+            if (!threat) return;
+
+            document.getElementById('modal-title').textContent = `Analysis: ${threat.title}`;
+            document.getElementById('modal-content').innerHTML = `
+                <div class="space-y-4">
+                    <div class="cyber-card p-4 rounded-lg">
+                        <h4 class="font-semibold text-blue-400 mb-2">Threat Analysis</h4>
+                        <p class="text-gray-300">${threat.analysis}</p>
+                    </div>
+                    <div class="cyber-card p-4 rounded-lg">
+                        <h4 class="font-semibold text-blue-400 mb-2">Technical Details</h4>
+                        <div class="space-y-2 text-sm">
+                            <div><span class="text-gray-400">IOC:</span> <span class="text-green-300 font-mono">${threat.ioc}</span></div>
+                            <div><span class="text-gray-400">Affected Sectors:</span> <span class="text-yellow-300">${threat.affected}</span></div>
+                            <div><span class="text-gray-400">Severity:</span> <span class="text-red-300">${threat.severity.toUpperCase()}</span></div>
+                        </div>
+                    </div>
+                    <div class="cyber-card p-4 rounded-lg">
+                        <h4 class="font-semibold text-blue-400 mb-2">Recommended Actions</h4>
+                        <ul class="text-gray-300 text-sm space-y-1">
+                            <li>• Update security signatures</li>
+                            <li>• Monitor network traffic for indicators</li>
+                            <li>• Review access logs for suspicious activity</li>
+                            <li>• Implement additional monitoring controls</li>
+                        </ul>
+                    </div>
+                    <div class="flex gap-3">
+                        <button onclick="submitAnalysis(${threatId})" class="flex-1 bg-blue-600 hover:bg-blue-700 text-white py-2 px-4 rounded-lg transition-colors">
+                            Submit Analysis
+                        </button>
+                        <button onclick="shareThreat(${threatId})" class="flex-1 bg-green-600 hover:bg-green-700 text-white py-2 px-4 rounded-lg transition-colors">
+                            Share with Community
+                        </button>
+                    </div>
+                </div>
+            `;
+            document.getElementById('analysis-modal').classList.remove('hidden');
+        }
+
+        // Open analysis tools
+        function openTool(tool) {
+            const toolNames = {
+                malware: 'Malware Analyzer',
+                network: 'Network Tracker',
+                ioc: 'IOC Scanner',
+                forensics: 'Digital Forensics'
+            };
+
+            document.getElementById('modal-title').textContent = toolNames[tool];
+            document.getElementById('modal-content').innerHTML = `
+                <div class="space-y-4">
+                    <div class="cyber-card p-4 rounded-lg">
+                        <h4 class="font-semibold text-blue-400 mb-2">${toolNames[tool]}</h4>
+                        <p class="text-gray-300">Advanced cybersecurity tool for threat analysis and investigation.</p>
+                    </div>
+                    <div class="cyber-card p-4 rounded-lg">
+                        <h4 class="font-semibold text-blue-400 mb-2">Upload File/Data</h4>
+                        <div class="border-2 border-dashed border-gray-600 rounded-lg p-8 text-center">
+                            <div class="text-2xl mb-2">📁</div>
+                            <p class="text-gray-400">Drag and drop files here or click to browse</p>
+                            <button class="mt-4 bg-blue-600 hover:bg-blue-700 text-white py-2 px-4 rounded-lg transition-colors">
+                                Choose File
+                            </button>
+                        </div>
+                    </div>
+                    <div class="flex gap-3">
+                        <button class="flex-1 bg-blue-600 hover:bg-blue-700 text-white py-2 px-4 rounded-lg transition-colors">
+                            Analyze
+                        </button>
+                        <button onclick="closeModal()" class="flex-1 bg-gray-600 hover:bg-gray-700 text-white py-2 px-4 rounded-lg transition-colors">
+                            Cancel
+                        </button>
+                    </div>
+                </div>
+            `;
+            document.getElementById('analysis-modal').classList.remove('hidden');
+        }
+
+        // Join challenge
+        function joinChallenge(challengeId) {
+            alert(`Joined challenge ${challengeId}! You'll receive detailed instructions via email.`);
+        }
+
+        // Submit analysis
+        function submitAnalysis(threatId) {
+            alert(`Analysis submitted for threat ${threatId}! +50 XP earned.`);
+            closeModal();
+        }
+
+        // Share threat
+        function shareThreat(threatId) {
+            alert(`Threat ${threatId} shared with the community! +25 XP earned.`);
+        }
+
+        // Close modal
+        function closeModal() {
+            document.getElementById('analysis-modal').classList.add('hidden');
+        }
+
+        // Initialize when page loads
+        document.addEventListener('DOMContentLoaded', init);
+    </script>
+</body>
+</html> 

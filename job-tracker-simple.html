@@ -1,0 +1,664 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>EasyApply Tracker</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        body {
+            background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 50%, #f1f5f9 100%);
+            min-height: 100vh;
+        }
+        
+        .job-card {
+            transition: all 0.2s ease-in-out;
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+        .job-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
+        }
+        .priority-high { border-left-color: #ef4444; }
+        .priority-medium { border-left-color: #eab308; }
+        .priority-low { border-left-color: #22c55e; }
+        
+        .hidden { display: none; }
+        
+        /* Enhanced card styling */
+        .stats-card, .control-card, .form-card {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
+        }
+        
+        .stats-card:hover, .control-card:hover {
+            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.08);
+        }
+        
+        /* Additional styling for better visual appeal */
+        .header-section {
+            background: linear-gradient(135deg, rgba(255, 255, 255, 0.1) 0%, rgba(255, 255, 255, 0.05) 100%);
+            backdrop-filter: blur(10px);
+            border-radius: 1rem;
+            padding: 2rem;
+            margin-bottom: 2rem;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+        
+        /* Smooth transitions for all interactive elements */
+        button, input, select, textarea {
+            transition: all 0.2s ease-in-out;
+        }
+        
+        /* Enhanced focus states */
+        input:focus, select:focus, textarea:focus {
+            box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+        }
+        
+        /* Simple icons using CSS */
+        .icon {
+            display: inline-block;
+            width: 1em;
+            height: 1em;
+            stroke: currentColor;
+            fill: none;
+            stroke-width: 2;
+            stroke-linecap: round;
+            stroke-linejoin: round;
+        }
+        
+        .icon-plus::before { content: "+"; font-weight: bold; }
+        .icon-search::before { content: "🔍"; }
+        .icon-filter::before { content: "⚙"; }
+        .icon-calendar::before { content: "📅"; }
+        .icon-map::before { content: "📍"; }
+        .icon-building::before { content: "🏢"; }
+        .icon-dollar::before { content: "$"; }
+        .icon-clock::before { content: "⏰"; }
+        .icon-check::before { content: "✓"; }
+        .icon-x::before { content: "✗"; }
+        .icon-alert::before { content: "⚠"; }
+        .icon-edit::before { content: "✏"; }
+        .icon-trash::before { content: "🗑"; }
+        .icon-eye::before { content: "👁"; }
+    </style>
+</head>
+<body>
+    <div class="min-h-screen p-4">
+        <div class="max-w-7xl mx-auto">
+            <!-- Header -->
+            <div class="header-section">
+                <h1 class="text-3xl font-bold text-gray-900 mb-2">EasyApply Tracker</h1>
+                <p class="text-gray-600">Organize and track your job applications efficiently</p>
+            </div>
+
+            <!-- Stats Cards -->
+            <div class="grid grid-cols-1 md:grid-cols-4 gap-4 mb-6" id="stats">
+                <div class="stats-card p-6 rounded-lg border">
+                    <div class="flex items-center justify-between">
+                        <div>
+                            <p class="text-sm text-gray-600">Total Applications</p>
+                            <p class="text-2xl font-bold text-gray-900" id="total-count">0</p>
+                        </div>
+                        <span class="icon icon-building h-8 w-8 text-blue-500 text-2xl"></span>
+                    </div>
+                </div>
+                <div class="stats-card p-6 rounded-lg border">
+                    <div class="flex items-center justify-between">
+                        <div>
+                            <p class="text-sm text-gray-600">Applied</p>
+                            <p class="text-2xl font-bold text-yellow-600" id="applied-count">0</p>
+                        </div>
+                        <span class="icon icon-clock h-8 w-8 text-yellow-500 text-2xl"></span>
+                    </div>
+                </div>
+                <div class="stats-card p-6 rounded-lg border">
+                    <div class="flex items-center justify-between">
+                        <div>
+                            <p class="text-sm text-gray-600">Interviews</p>
+                            <p class="text-2xl font-bold text-purple-600" id="interviews-count">0</p>
+                        </div>
+                        <span class="icon icon-calendar h-8 w-8 text-purple-500 text-2xl"></span>
+                    </div>
+                </div>
+                <div class="stats-card p-6 rounded-lg border">
+                    <div class="flex items-center justify-between">
+                        <div>
+                            <p class="text-sm text-gray-600">Offers</p>
+                            <p class="text-2xl font-bold text-green-600" id="offers-count">0</p>
+                        </div>
+                        <span class="icon icon-check h-8 w-8 text-green-500 text-2xl"></span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Upcoming Deadlines Alert -->
+            <div class="bg-orange-50 border-l-4 border-orange-400 p-4 mb-6 hidden" id="deadlines-alert">
+                <div class="flex">
+                    <span class="icon icon-alert h-5 w-5 text-orange-400 mt-0.5 text-xl"></span>
+                    <div class="ml-3">
+                        <h3 class="text-sm font-medium text-orange-800">Upcoming Deadlines</h3>
+                        <div class="mt-2 text-sm text-orange-700" id="deadlines-list"></div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="flex flex-col lg:flex-row gap-6">
+                <!-- Main Content -->
+                <div class="flex-1">
+                    <!-- Controls -->
+                    <div class="control-card p-4 rounded-lg border mb-6">
+                        <div class="flex flex-col sm:flex-row gap-4 items-center justify-between">
+                            <div class="flex flex-col sm:flex-row gap-4 flex-1">
+                                <div class="relative">
+                                    <span class="icon icon-search absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-4 w-4"></span>
+                                    <input
+                                        type="text"
+                                        placeholder="Search jobs..."
+                                        class="pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                                        id="search-input"
+                                    />
+                                </div>
+                                <div class="flex items-center gap-2">
+                                    <span class="icon icon-filter h-4 w-4 text-gray-400"></span>
+                                    <select
+                                        class="border border-gray-300 rounded-lg px-3 py-2 focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                                        id="status-filter"
+                                    >
+                                        <option value="all">All Status</option>
+                                        <option value="interested">Interested</option>
+                                        <option value="applied">Applied</option>
+                                        <option value="interview">Interview</option>
+                                        <option value="offer">Offer</option>
+                                        <option value="rejected">Rejected</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <button
+                                onclick="showAddForm()"
+                                class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg flex items-center gap-2 transition-colors"
+                            >
+                                <span class="icon icon-plus h-4 w-4"></span>
+                                Add Job
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Job List -->
+                    <div class="space-y-4" id="jobs-list">
+                        <!-- Jobs will be inserted here -->
+                    </div>
+                </div>
+
+                <!-- Add/Edit Form Sidebar -->
+                <div class="lg:w-96 form-card p-6 rounded-lg border h-fit hidden" id="form-sidebar">
+                    <h2 class="text-xl font-semibold mb-4" id="form-title">Add New Job Application</h2>
+                    <form onsubmit="handleSubmit(event)" class="space-y-4">
+                        <input type="hidden" id="edit-id" value="">
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-1">Company *</label>
+                            <input
+                                type="text"
+                                name="company"
+                                required
+                                class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                                id="company-input"
+                            />
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-1">Position *</label>
+                            <input
+                                type="text"
+                                name="position"
+                                required
+                                class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                                id="position-input"
+                            />
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-1">Location</label>
+                            <input
+                                type="text"
+                                name="location"
+                                class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                                id="location-input"
+                            />
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-1">Salary Range</label>
+                            <input
+                                type="text"
+                                name="salary"
+                                placeholder="e.g., $80k - $100k"
+                                class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                                id="salary-input"
+                            />
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-1">Status</label>
+                            <select
+                                name="status"
+                                class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                                id="status-input"
+                            >
+                                <option value="interested">Interested</option>
+                                <option value="applied">Applied</option>
+                                <option value="interview">Interview</option>
+                                <option value="offer">Offer</option>
+                                <option value="rejected">Rejected</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-1">Priority</label>
+                            <select
+                                name="priority"
+                                class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                                id="priority-input"
+                            >
+                                <option value="low">Low</option>
+                                <option value="medium">Medium</option>
+                                <option value="high">High</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-1">Application Deadline</label>
+                            <input
+                                type="date"
+                                name="deadline"
+                                class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                                id="deadline-input"
+                            />
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-1">Interview Date</label>
+                            <input
+                                type="date"
+                                name="interviewDate"
+                                class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                                id="interview-input"
+                            />
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-1">Job URL</label>
+                            <input
+                                type="url"
+                                name="jobUrl"
+                                class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                                id="url-input"
+                            />
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-1">Contacts</label>
+                            <input
+                                type="text"
+                                name="contacts"
+                                placeholder="Recruiter name, email, etc."
+                                class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                                id="contacts-input"
+                            />
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-1">Notes</label>
+                            <textarea
+                                name="notes"
+                                rows="3"
+                                class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                                placeholder="Requirements, prep notes, company culture..."
+                                id="notes-input"
+                            ></textarea>
+                        </div>
+                        <div class="flex gap-3">
+                            <button
+                                type="submit"
+                                class="flex-1 bg-blue-600 hover:bg-blue-700 text-white py-2 px-4 rounded-lg font-medium transition-colors"
+                            >
+                                Add Job
+                            </button>
+                            <button
+                                type="button"
+                                onclick="hideAddForm()"
+                                class="px-4 py-2 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 transition-colors"
+                            >
+                                Cancel
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Sample data
+        let jobs = [
+            {
+                id: 1,
+                company: 'TechCorp',
+                position: 'Senior Frontend Developer',
+                location: 'San Francisco, CA',
+                salary: '$120k - $150k',
+                status: 'applied',
+                appliedDate: '2025-01-15',
+                deadline: '2025-02-15',
+                jobUrl: 'https://techcorp.com/jobs/123',
+                notes: 'React, TypeScript, strong team culture',
+                contacts: 'Sarah Johnson - HR Manager',
+                interviewDate: '',
+                priority: 'high'
+            },
+            {
+                id: 2,
+                company: 'StartupXYZ',
+                position: 'Full Stack Engineer',
+                location: 'Remote',
+                salary: '$90k - $110k',
+                status: 'interview',
+                appliedDate: '2025-01-10',
+                deadline: '2025-02-01',
+                jobUrl: 'https://startupxyz.com/careers',
+                notes: 'Early stage startup, equity package',
+                contacts: 'Mike Chen - CTO',
+                interviewDate: '2025-02-08',
+                priority: 'medium'
+            }
+        ];
+
+        let editingJob = null;
+
+        // Initialize the app
+        function init() {
+            renderJobs();
+            updateStats();
+            checkDeadlines();
+            
+            // Add event listeners
+            document.getElementById('search-input').addEventListener('input', filterJobs);
+            document.getElementById('status-filter').addEventListener('change', filterJobs);
+        }
+
+        // Render jobs list
+        function renderJobs() {
+            const jobsList = document.getElementById('jobs-list');
+            const searchTerm = document.getElementById('search-input').value.toLowerCase();
+            const statusFilter = document.getElementById('status-filter').value;
+            
+            const filteredJobs = jobs.filter(job => {
+                const matchesSearch = job.company.toLowerCase().includes(searchTerm) ||
+                                     job.position.toLowerCase().includes(searchTerm);
+                const matchesStatus = statusFilter === 'all' || job.status === statusFilter;
+                return matchesSearch && matchesStatus;
+            });
+
+            if (filteredJobs.length === 0) {
+                jobsList.innerHTML = `
+                    <div class="text-center py-12">
+                        <span class="icon icon-building h-12 w-12 text-gray-400 mx-auto mb-4 text-5xl"></span>
+                        <h3 class="text-lg font-medium text-gray-900 mb-2">No jobs found</h3>
+                        <p class="text-gray-600">Start by adding your first job application!</p>
+                    </div>
+                `;
+                return;
+            }
+
+            jobsList.innerHTML = filteredJobs.map(job => createJobCard(job)).join('');
+        }
+
+        // Create job card HTML
+        function createJobCard(job) {
+            const statusInfo = getStatusInfo(job.status);
+            const priorityClass = `priority-${job.priority}`;
+            
+            return `
+                <div class="p-6 rounded-lg border-l-4 ${priorityClass} transition-shadow job-card" data-job-id="${job.id}">
+                    <div class="flex justify-between items-start mb-4">
+                        <div class="flex-1">
+                            <div class="flex items-center gap-3 mb-2">
+                                <h3 class="text-lg font-semibold text-gray-900">${job.position}</h3>
+                                <span class="px-2 py-1 rounded-full text-xs font-medium flex items-center gap-1 ${statusInfo.color}">
+                                    <span class="icon ${statusInfo.icon} h-3 w-3"></span>
+                                    ${statusInfo.label}
+                                </span>
+                                <span class="px-2 py-1 rounded-full text-xs font-medium ${
+                                    job.priority === 'high' ? 'bg-red-100 text-red-800' :
+                                    job.priority === 'medium' ? 'bg-yellow-100 text-yellow-800' :
+                                    'bg-green-100 text-green-800'
+                                }">
+                                    ${job.priority} priority
+                                </span>
+                            </div>
+                            <div class="flex items-center gap-4 text-sm text-gray-600 mb-2">
+                                <div class="flex items-center gap-1">
+                                    <span class="icon icon-building h-4 w-4"></span>
+                                    ${job.company}
+                                </div>
+                                <div class="flex items-center gap-1">
+                                    <span class="icon icon-map h-4 w-4"></span>
+                                    ${job.location}
+                                </div>
+                                ${job.salary ? `
+                                    <div class="flex items-center gap-1">
+                                        <span class="icon icon-dollar h-4 w-4"></span>
+                                        ${job.salary}
+                                    </div>
+                                ` : ''}
+                            </div>
+                            <div class="flex items-center gap-4 text-sm text-gray-500">
+                                <span>Applied: ${job.appliedDate}</span>
+                                ${job.deadline ? `<span>Deadline: ${job.deadline}</span>` : ''}
+                                ${job.interviewDate ? `<span>Interview: ${job.interviewDate}</span>` : ''}
+                            </div>
+                        </div>
+                        <div class="flex items-center gap-2">
+                            <button
+                                onclick="toggleDetails(${job.id})"
+                                class="p-2 text-gray-400 hover:text-gray-600 transition-colors"
+                            >
+                                <span class="icon icon-eye h-4 w-4"></span>
+                            </button>
+                            <button
+                                onclick="editJob(${job.id})"
+                                class="p-2 text-gray-400 hover:text-blue-600 transition-colors"
+                            >
+                                <span class="icon icon-edit h-4 w-4"></span>
+                            </button>
+                            <button
+                                onclick="deleteJob(${job.id})"
+                                class="p-2 text-gray-400 hover:text-red-600 transition-colors"
+                            >
+                                <span class="icon icon-trash h-4 w-4"></span>
+                            </button>
+                        </div>
+                    </div>
+                    
+                    <div class="border-t pt-4 mt-4 space-y-3 hidden" id="details-${job.id}">
+                        ${job.notes ? `
+                            <div>
+                                <h4 class="font-medium text-gray-700 mb-1">Notes:</h4>
+                                <p class="text-gray-600">${job.notes}</p>
+                            </div>
+                        ` : ''}
+                        ${job.contacts ? `
+                            <div>
+                                <h4 class="font-medium text-gray-700 mb-1">Contacts:</h4>
+                                <p class="text-gray-600">${job.contacts}</p>
+                            </div>
+                        ` : ''}
+                        ${job.jobUrl ? `
+                            <div>
+                                <h4 class="font-medium text-gray-700 mb-1">Job URL:</h4>
+                                <a href="${job.jobUrl}" target="_blank" rel="noopener noreferrer" class="text-blue-600 hover:underline">
+                                    ${job.jobUrl}
+                                </a>
+                            </div>
+                        ` : ''}
+                    </div>
+                </div>
+            `;
+        }
+
+        // Get status info
+        function getStatusInfo(status) {
+            const statusMap = {
+                interested: { label: 'Interested', color: 'bg-blue-100 text-blue-800', icon: 'icon-eye' },
+                applied: { label: 'Applied', color: 'bg-yellow-100 text-yellow-800', icon: 'icon-clock' },
+                interview: { label: 'Interview', color: 'bg-purple-100 text-purple-800', icon: 'icon-calendar' },
+                offer: { label: 'Offer', color: 'bg-green-100 text-green-800', icon: 'icon-check' },
+                rejected: { label: 'Rejected', color: 'bg-red-100 text-red-800', icon: 'icon-x' }
+            };
+            return statusMap[status] || statusMap.interested;
+        }
+
+        // Update statistics
+        function updateStats() {
+            document.getElementById('total-count').textContent = jobs.length;
+            document.getElementById('applied-count').textContent = jobs.filter(job => job.status === 'applied').length;
+            document.getElementById('interviews-count').textContent = jobs.filter(job => job.status === 'interview').length;
+            document.getElementById('offers-count').textContent = jobs.filter(job => job.status === 'offer').length;
+        }
+
+        // Check upcoming deadlines
+        function checkDeadlines() {
+            const today = new Date();
+            const nextWeek = new Date(today.getTime() + 7 * 24 * 60 * 60 * 1000);
+            
+            const upcomingDeadlines = jobs.filter(job => {
+                if (!job.deadline) return false;
+                const deadline = new Date(job.deadline);
+                return deadline >= today && deadline <= nextWeek;
+            }).sort((a, b) => new Date(a.deadline) - new Date(b.deadline));
+
+            const alertElement = document.getElementById('deadlines-alert');
+            const listElement = document.getElementById('deadlines-list');
+
+            if (upcomingDeadlines.length > 0) {
+                listElement.innerHTML = upcomingDeadlines.map(job => 
+                    `<div class="mb-1"><strong>${job.company}</strong> - ${job.position} (Due: ${job.deadline})</div>`
+                ).join('');
+                alertElement.classList.remove('hidden');
+            } else {
+                alertElement.classList.add('hidden');
+            }
+        }
+
+        // Filter jobs
+        function filterJobs() {
+            renderJobs();
+        }
+
+        // Show add form
+        function showAddForm() {
+            editingJob = null;
+            document.getElementById('form-title').textContent = 'Add New Job Application';
+            document.getElementById('edit-id').value = '';
+            clearForm();
+            document.getElementById('form-sidebar').classList.remove('hidden');
+        }
+
+        // Hide add form
+        function hideAddForm() {
+            document.getElementById('form-sidebar').classList.add('hidden');
+            editingJob = null;
+        }
+
+        // Clear form
+        function clearForm() {
+            document.getElementById('company-input').value = '';
+            document.getElementById('position-input').value = '';
+            document.getElementById('location-input').value = '';
+            document.getElementById('salary-input').value = '';
+            document.getElementById('status-input').value = 'interested';
+            document.getElementById('priority-input').value = 'medium';
+            document.getElementById('deadline-input').value = '';
+            document.getElementById('interview-input').value = '';
+            document.getElementById('url-input').value = '';
+            document.getElementById('contacts-input').value = '';
+            document.getElementById('notes-input').value = '';
+        }
+
+        // Handle form submission
+        function handleSubmit(event) {
+            event.preventDefault();
+            
+            const formData = {
+                company: document.getElementById('company-input').value,
+                position: document.getElementById('position-input').value,
+                location: document.getElementById('location-input').value,
+                salary: document.getElementById('salary-input').value,
+                status: document.getElementById('status-input').value,
+                priority: document.getElementById('priority-input').value,
+                deadline: document.getElementById('deadline-input').value,
+                interviewDate: document.getElementById('interview-input').value,
+                jobUrl: document.getElementById('url-input').value,
+                contacts: document.getElementById('contacts-input').value,
+                notes: document.getElementById('notes-input').value,
+                appliedDate: new Date().toISOString().split('T')[0]
+            };
+
+            if (editingJob) {
+                // Update existing job
+                const index = jobs.findIndex(job => job.id === editingJob);
+                jobs[index] = { ...jobs[index], ...formData };
+            } else {
+                // Add new job
+                const newJob = {
+                    ...formData,
+                    id: Date.now()
+                };
+                jobs.push(newJob);
+            }
+
+            hideAddForm();
+            renderJobs();
+            updateStats();
+            checkDeadlines();
+        }
+
+        // Edit job
+        function editJob(jobId) {
+            const job = jobs.find(j => j.id === jobId);
+            if (!job) return;
+
+            editingJob = jobId;
+            document.getElementById('form-title').textContent = 'Edit Job Application';
+            document.getElementById('edit-id').value = jobId;
+            
+            document.getElementById('company-input').value = job.company;
+            document.getElementById('position-input').value = job.position;
+            document.getElementById('location-input').value = job.location;
+            document.getElementById('salary-input').value = job.salary;
+            document.getElementById('status-input').value = job.status;
+            document.getElementById('priority-input').value = job.priority;
+            document.getElementById('deadline-input').value = job.deadline;
+            document.getElementById('interview-input').value = job.interviewDate;
+            document.getElementById('url-input').value = job.jobUrl;
+            document.getElementById('contacts-input').value = job.contacts;
+            document.getElementById('notes-input').value = job.notes;
+            
+            document.getElementById('form-sidebar').classList.remove('hidden');
+        }
+
+        // Delete job
+        function deleteJob(jobId) {
+            if (confirm('Are you sure you want to delete this job application?')) {
+                jobs = jobs.filter(job => job.id !== jobId);
+                renderJobs();
+                updateStats();
+                checkDeadlines();
+            }
+        }
+
+        // Toggle job details
+        function toggleDetails(jobId) {
+            const detailsElement = document.getElementById(`details-${jobId}`);
+            detailsElement.classList.toggle('hidden');
+        }
+
+        // Initialize when page loads
+        document.addEventListener('DOMContentLoaded', init);
+    </script>
+</body>
+</html> 
