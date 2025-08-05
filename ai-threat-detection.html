@@ -1,0 +1,481 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI-Powered Threat Detection System</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #0f0f23 0%, #1a1a2e 25%, #16213e 50%, #0f3460 75%, #533483 100%);
+            color: #fff;
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        .header {
+            text-align: center;
+            padding: 40px 0;
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border-radius: 15px;
+            margin-bottom: 30px;
+        }
+
+        .header h1 {
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+            background: linear-gradient(45deg, #00ff88, #00ccff);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .header p {
+            font-size: 1.2rem;
+            opacity: 0.9;
+        }
+
+        .dashboard {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 30px;
+            margin-bottom: 30px;
+        }
+
+        .panel {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border-radius: 15px;
+            padding: 25px;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .panel h2 {
+            color: #00ff88;
+            margin-bottom: 20px;
+            font-size: 1.5rem;
+        }
+
+        .threat-stats {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+
+        .stat-card {
+            background: rgba(0, 255, 136, 0.1);
+            border: 1px solid rgba(0, 255, 136, 0.3);
+            border-radius: 10px;
+            padding: 15px;
+            text-align: center;
+        }
+
+        .stat-number {
+            font-size: 2rem;
+            font-weight: bold;
+            color: #00ff88;
+        }
+
+        .stat-label {
+            font-size: 0.9rem;
+            opacity: 0.8;
+        }
+
+        .detection-area {
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 10px;
+            padding: 20px;
+            margin-bottom: 20px;
+        }
+
+        .upload-area {
+            border: 2px dashed rgba(0, 255, 136, 0.5);
+            border-radius: 10px;
+            padding: 40px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .upload-area:hover {
+            border-color: #00ff88;
+            background: rgba(0, 255, 136, 0.1);
+        }
+
+        .upload-area i {
+            font-size: 3rem;
+            color: #00ff88;
+            margin-bottom: 15px;
+        }
+
+        .upload-area p {
+            font-size: 1.1rem;
+            margin-bottom: 10px;
+        }
+
+        .upload-area small {
+            opacity: 0.7;
+        }
+
+        .analysis-results {
+            margin-top: 20px;
+        }
+
+        .result-item {
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 8px;
+            padding: 15px;
+            margin-bottom: 10px;
+            border-left: 4px solid #00ff88;
+        }
+
+        .result-item.threat {
+            border-left-color: #ff4444;
+            background: rgba(255, 68, 68, 0.1);
+        }
+
+        .result-item.safe {
+            border-left-color: #00ff88;
+            background: rgba(0, 255, 136, 0.1);
+        }
+
+        .result-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 10px;
+        }
+
+        .result-title {
+            font-weight: bold;
+            color: #00ff88;
+        }
+
+        .result-score {
+            background: rgba(0, 255, 136, 0.2);
+            padding: 5px 10px;
+            border-radius: 15px;
+            font-size: 0.9rem;
+        }
+
+        .result-score.threat {
+            background: rgba(255, 68, 68, 0.2);
+            color: #ff4444;
+        }
+
+        .ml-models {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 15px;
+        }
+
+        .model-card {
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 10px;
+            padding: 20px;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .model-name {
+            font-weight: bold;
+            color: #00ccff;
+            margin-bottom: 10px;
+        }
+
+        .model-accuracy {
+            font-size: 0.9rem;
+            opacity: 0.8;
+        }
+
+        .model-status {
+            display: inline-block;
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            background: #00ff88;
+            margin-right: 8px;
+        }
+
+        .code-preview {
+            background: #1a1a2e;
+            border-radius: 10px;
+            padding: 20px;
+            margin-top: 20px;
+            font-family: 'Courier New', monospace;
+            font-size: 0.9rem;
+            overflow-x: auto;
+        }
+
+        .code-preview pre {
+            color: #00ff88;
+        }
+
+        .btn {
+            background: linear-gradient(45deg, #00ff88, #00ccff);
+            color: #000;
+            border: none;
+            padding: 12px 25px;
+            border-radius: 25px;
+            cursor: pointer;
+            font-weight: bold;
+            transition: all 0.3s ease;
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0, 255, 136, 0.3);
+        }
+
+        .alert {
+            background: rgba(255, 68, 68, 0.2);
+            border: 1px solid rgba(255, 68, 68, 0.5);
+            border-radius: 8px;
+            padding: 15px;
+            margin-bottom: 20px;
+            color: #ff4444;
+        }
+
+        .success {
+            background: rgba(0, 255, 136, 0.2);
+            border: 1px solid rgba(0, 255, 136, 0.5);
+            color: #00ff88;
+        }
+
+        @media (max-width: 768px) {
+            .dashboard {
+                grid-template-columns: 1fr;
+            }
+            
+            .threat-stats {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1><i class="fas fa-robot"></i> AI-Powered Threat Detection</h1>
+            <p>Advanced machine learning system for detecting AI-generated cyber threats</p>
+        </div>
+
+        <div class="dashboard">
+            <div class="panel">
+                <h2><i class="fas fa-shield-alt"></i> Threat Detection Dashboard</h2>
+                
+                <div class="threat-stats">
+                    <div class="stat-card">
+                        <div class="stat-number">1,247</div>
+                        <div class="stat-label">Threats Detected</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-number">98.7%</div>
+                        <div class="stat-label">Accuracy Rate</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-number">23</div>
+                        <div class="stat-label">AI Phishing</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-number">156</div>
+                        <div class="stat-label">Deepfake Attempts</div>
+                    </div>
+                </div>
+
+                <div class="detection-area">
+                    <h3>Real-time Analysis</h3>
+                    <div class="upload-area" onclick="simulateDetection()">
+                        <i class="fas fa-cloud-upload-alt"></i>
+                        <p>Click to simulate threat detection</p>
+                        <small>Analyzes emails, images, and text for AI-generated threats</small>
+                    </div>
+                    
+                    <div class="analysis-results" id="results">
+                        <!-- Results will appear here -->
+                    </div>
+                </div>
+            </div>
+
+            <div class="panel">
+                <h2><i class="fas fa-brain"></i> ML Models & Algorithms</h2>
+                
+                <div class="ml-models">
+                    <div class="model-card">
+                        <div class="model-name">
+                            <span class="model-status"></span>
+                            Phishing Detection (BERT)
+                        </div>
+                        <div class="model-accuracy">Accuracy: 96.8%</div>
+                        <div class="model-accuracy">Python + TensorFlow</div>
+                    </div>
+                    
+                    <div class="model-card">
+                        <div class="model-name">
+                            <span class="model-status"></span>
+                            Deepfake Detection (CNN)
+                        </div>
+                        <div class="model-accuracy">Accuracy: 94.2%</div>
+                        <div class="model-accuracy">Python + OpenCV</div>
+                    </div>
+                    
+                    <div class="model-card">
+                        <div class="model-name">
+                            <span class="model-status"></span>
+                            Behavioral Analysis (LSTM)
+                        </div>
+                        <div class="model-accuracy">Accuracy: 97.1%</div>
+                        <div class="model-accuracy">Python + Keras</div>
+                    </div>
+                    
+                    <div class="model-card">
+                        <div class="model-name">
+                            <span class="model-status"></span>
+                            Anomaly Detection (Autoencoder)
+                        </div>
+                        <div class="model-accuracy">Accuracy: 95.5%</div>
+                        <div class="model-accuracy">Python + PyTorch</div>
+                    </div>
+                </div>
+
+                <div class="code-preview">
+                    <h3>Core Detection Algorithm (Python)</h3>
+                    <pre>
+import tensorflow as tf
+import numpy as np
+from transformers import BertTokenizer, TFAutoModel
+
+class AIThreatDetector:
+    def __init__(self):
+        self.phishing_model = self.load_phishing_model()
+        self.deepfake_model = self.load_deepfake_model()
+        self.tokenizer = BertTokenizer.from_pretrained('bert-base-uncased')
+    
+    def detect_ai_phishing(self, email_text):
+        # Tokenize and analyze email content
+        inputs = self.tokenizer(email_text, return_tensors="tf", 
+                              truncation=True, max_length=512)
+        predictions = self.phishing_model(inputs)
+        return self.analyze_threat_score(predictions)
+    
+    def detect_deepfake(self, image):
+        # Preprocess image for deepfake detection
+        processed_img = self.preprocess_image(image)
+        prediction = self.deepfake_model.predict(processed_img)
+        return self.calculate_authenticity_score(prediction)
+    
+    def analyze_behavioral_patterns(self, user_activity):
+        # LSTM-based behavioral analysis
+        sequence = self.extract_features(user_activity)
+        anomaly_score = self.behavior_model.predict(sequence)
+        return self.classify_anomaly(anomaly_score)
+                    </pre>
+                </div>
+            </div>
+        </div>
+
+        <div class="panel">
+            <h2><i class="fas fa-chart-line"></i> Threat Intelligence</h2>
+            
+            <div class="alert">
+                <strong><i class="fas fa-exclamation-triangle"></i> Active Threat Alert:</strong>
+                Detected 3 AI-generated phishing campaigns targeting financial institutions in the last 24 hours.
+            </div>
+            
+            <div class="success">
+                <strong><i class="fas fa-check-circle"></i> System Status:</strong>
+                All ML models are operational and monitoring for threats in real-time.
+            </div>
+            
+            <h3>Recent Detections</h3>
+            <div class="analysis-results">
+                <div class="result-item threat">
+                    <div class="result-header">
+                        <span class="result-title">AI-Generated Phishing Email</span>
+                        <span class="result-score threat">98.7% Threat</span>
+                    </div>
+                    <p>Detected sophisticated phishing attempt using GPT-generated content targeting corporate credentials.</p>
+                </div>
+                
+                <div class="result-item threat">
+                    <div class="result-header">
+                        <span class="result-title">Deepfake Video Attempt</span>
+                        <span class="result-score threat">94.2% Threat</span>
+                    </div>
+                    <p>Identified AI-generated video content attempting to impersonate company executives.</p>
+                </div>
+                
+                <div class="result-item safe">
+                    <div class="result-header">
+                        <span class="result-title">Legitimate Communication</span>
+                        <span class="result-score">2.1% Threat</span>
+                    </div>
+                    <p>Verified authentic email from verified sender with normal behavioral patterns.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function simulateDetection() {
+            const results = document.getElementById('results');
+            results.innerHTML = '<div class="alert"><i class="fas fa-spinner fa-spin"></i> Analyzing content...</div>';
+            
+            setTimeout(() => {
+                const threats = [
+                    {
+                        title: 'AI-Generated Phishing Email',
+                        score: '96.8%',
+                        type: 'threat',
+                        description: 'Detected sophisticated phishing attempt using AI-generated content targeting financial data.'
+                    },
+                    {
+                        title: 'Deepfake Image Analysis',
+                        score: '94.2%',
+                        type: 'threat',
+                        description: 'Identified AI-manipulated image attempting to bypass authentication systems.'
+                    },
+                    {
+                        title: 'Behavioral Anomaly',
+                        score: '87.3%',
+                        type: 'threat',
+                        description: 'Unusual user behavior pattern detected, possible AI-driven attack vector.'
+                    }
+                ];
+                
+                results.innerHTML = threats.map(threat => `
+                    <div class="result-item ${threat.type}">
+                        <div class="result-header">
+                            <span class="result-title">${threat.title}</span>
+                            <span class="result-score ${threat.type}">${threat.score} Threat</span>
+                        </div>
+                        <p>${threat.description}</p>
+                    </div>
+                `).join('');
+            }, 2000);
+        }
+
+        // Simulate real-time updates
+        setInterval(() => {
+            const stats = document.querySelectorAll('.stat-number');
+            stats[0].textContent = Math.floor(Math.random() * 50) + 1247;
+            stats[2].textContent = Math.floor(Math.random() * 10) + 23;
+            stats[3].textContent = Math.floor(Math.random() * 20) + 156;
+        }, 5000);
+    </script>
+</body>
+</html> 

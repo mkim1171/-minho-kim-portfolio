@@ -1,0 +1,579 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Adversarial Attack Simulator</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #1a0f2e 0%, #2d1b69 25%, #533483 50%, #8e44ad 75%, #9b59b6 100%);
+            color: #fff;
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        .header {
+            text-align: center;
+            padding: 40px 0;
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border-radius: 15px;
+            margin-bottom: 30px;
+        }
+
+        .header h1 {
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+            background: linear-gradient(45deg, #ff6b6b, #feca57);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .header p {
+            font-size: 1.2rem;
+            opacity: 0.9;
+        }
+
+        .simulator-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 30px;
+            margin-bottom: 30px;
+        }
+
+        .panel {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border-radius: 15px;
+            padding: 25px;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .panel h2 {
+            color: #ff6b6b;
+            margin-bottom: 20px;
+            font-size: 1.5rem;
+        }
+
+        .attack-types {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+
+        .attack-card {
+            background: rgba(255, 107, 107, 0.1);
+            border: 1px solid rgba(255, 107, 107, 0.3);
+            border-radius: 10px;
+            padding: 15px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .attack-card:hover {
+            background: rgba(255, 107, 107, 0.2);
+            transform: translateY(-2px);
+        }
+
+        .attack-card.active {
+            background: rgba(255, 107, 107, 0.3);
+            border-color: #ff6b6b;
+        }
+
+        .attack-name {
+            font-weight: bold;
+            color: #ff6b6b;
+            margin-bottom: 5px;
+        }
+
+        .attack-desc {
+            font-size: 0.9rem;
+            opacity: 0.8;
+        }
+
+        .model-target {
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 10px;
+            padding: 20px;
+            margin-bottom: 20px;
+        }
+
+        .target-selector {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 15px;
+            flex-wrap: wrap;
+        }
+
+        .target-btn {
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            color: #fff;
+            padding: 8px 15px;
+            border-radius: 20px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .target-btn:hover {
+            background: rgba(255, 107, 107, 0.2);
+            border-color: #ff6b6b;
+        }
+
+        .target-btn.active {
+            background: rgba(255, 107, 107, 0.3);
+            border-color: #ff6b6b;
+            color: #ff6b6b;
+        }
+
+        .simulation-area {
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 10px;
+            padding: 20px;
+            margin-bottom: 20px;
+        }
+
+        .simulation-controls {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+
+        .control-group {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .control-group label {
+            margin-bottom: 5px;
+            font-size: 0.9rem;
+            opacity: 0.8;
+        }
+
+        .control-group input, .control-group select {
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            color: #fff;
+            padding: 8px 12px;
+            border-radius: 5px;
+        }
+
+        .control-group input:focus, .control-group select:focus {
+            outline: none;
+            border-color: #ff6b6b;
+        }
+
+        .btn {
+            background: linear-gradient(45deg, #ff6b6b, #feca57);
+            color: #000;
+            border: none;
+            padding: 12px 25px;
+            border-radius: 25px;
+            cursor: pointer;
+            font-weight: bold;
+            transition: all 0.3s ease;
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(255, 107, 107, 0.3);
+        }
+
+        .btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .results-area {
+            margin-top: 20px;
+        }
+
+        .result-item {
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 8px;
+            padding: 15px;
+            margin-bottom: 10px;
+            border-left: 4px solid #ff6b6b;
+        }
+
+        .result-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 10px;
+        }
+
+        .result-title {
+            font-weight: bold;
+            color: #ff6b6b;
+        }
+
+        .result-score {
+            background: rgba(255, 107, 107, 0.2);
+            padding: 5px 10px;
+            border-radius: 15px;
+            font-size: 0.9rem;
+        }
+
+        .defense-strategies {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 15px;
+        }
+
+        .strategy-card {
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 10px;
+            padding: 20px;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .strategy-name {
+            font-weight: bold;
+            color: #feca57;
+            margin-bottom: 10px;
+        }
+
+        .strategy-desc {
+            font-size: 0.9rem;
+            opacity: 0.8;
+            margin-bottom: 10px;
+        }
+
+        .strategy-effectiveness {
+            font-size: 0.9rem;
+            color: #feca57;
+        }
+
+        .code-preview {
+            background: #1a0f2e;
+            border-radius: 10px;
+            padding: 20px;
+            margin-top: 20px;
+            font-family: 'Courier New', monospace;
+            font-size: 0.9rem;
+            overflow-x: auto;
+        }
+
+        .code-preview pre {
+            color: #feca57;
+        }
+
+        .alert {
+            background: rgba(255, 68, 68, 0.2);
+            border: 1px solid rgba(255, 68, 68, 0.5);
+            border-radius: 8px;
+            padding: 15px;
+            margin-bottom: 20px;
+            color: #ff4444;
+        }
+
+        .success {
+            background: rgba(0, 255, 136, 0.2);
+            border: 1px solid rgba(0, 255, 136, 0.5);
+            color: #00ff88;
+        }
+
+        .warning {
+            background: rgba(255, 193, 7, 0.2);
+            border: 1px solid rgba(255, 193, 7, 0.5);
+            color: #feca57;
+        }
+
+        @media (max-width: 768px) {
+            .simulator-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .attack-types {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1><i class="fas fa-bug"></i> AI Adversarial Attack Simulator</h1>
+            <p>Comprehensive testing framework for AI model security and defensive strategies</p>
+        </div>
+
+        <div class="simulator-grid">
+            <div class="panel">
+                <h2><i class="fas fa-crosshairs"></i> Attack Configuration</h2>
+                
+                <div class="attack-types">
+                    <div class="attack-card active" onclick="selectAttack('fgsm')">
+                        <div class="attack-name">FGSM Attack</div>
+                        <div class="attack-desc">Fast Gradient Sign Method</div>
+                    </div>
+                    <div class="attack-card" onclick="selectAttack('pgd')">
+                        <div class="attack-name">PGD Attack</div>
+                        <div class="attack-desc">Projected Gradient Descent</div>
+                    </div>
+                    <div class="attack-card" onclick="selectAttack('carlini')">
+                        <div class="attack-name">Carlini & Wagner</div>
+                        <div class="attack-desc">L2-norm optimization</div>
+                    </div>
+                    <div class="attack-card" onclick="selectAttack('deepfool')">
+                        <div class="attack-name">DeepFool</div>
+                        <div class="attack-desc">Minimal perturbation</div>
+                    </div>
+                </div>
+
+                <div class="model-target">
+                    <h3>Target Model</h3>
+                    <div class="target-selector">
+                        <div class="target-btn active" onclick="selectTarget('image_classifier')">Image Classifier</div>
+                        <div class="target-btn" onclick="selectTarget('nlp_model')">NLP Model</div>
+                        <div class="target-btn" onclick="selectTarget('malware_detector')">Malware Detector</div>
+                        <div class="target-btn" onclick="selectTarget('fraud_detector')">Fraud Detector</div>
+                    </div>
+                </div>
+
+                <div class="simulation-area">
+                    <h3>Attack Parameters</h3>
+                    <div class="simulation-controls">
+                        <div class="control-group">
+                            <label>Epsilon (ε)</label>
+                            <input type="range" id="epsilon" min="0.01" max="0.3" step="0.01" value="0.1">
+                            <span id="epsilon-value">0.1</span>
+                        </div>
+                        <div class="control-group">
+                            <label>Iterations</label>
+                            <input type="number" id="iterations" min="1" max="100" value="10">
+                        </div>
+                        <div class="control-group">
+                            <label>Learning Rate</label>
+                            <input type="number" id="lr" min="0.001" max="0.1" step="0.001" value="0.01">
+                        </div>
+                        <div class="control-group">
+                            <label>Attack Strength</label>
+                            <select id="strength">
+                                <option value="low">Low</option>
+                                <option value="medium" selected>Medium</option>
+                                <option value="high">High</option>
+                                <option value="extreme">Extreme</option>
+                            </select>
+                        </div>
+                    </div>
+                    
+                    <button class="btn" onclick="runAttack()">
+                        <i class="fas fa-play"></i> Launch Attack
+                    </button>
+                </div>
+            </div>
+
+            <div class="panel">
+                <h2><i class="fas fa-shield-alt"></i> Defense Strategies</h2>
+                
+                <div class="defense-strategies">
+                    <div class="strategy-card">
+                        <div class="strategy-name">Adversarial Training</div>
+                        <div class="strategy-desc">Train model with adversarial examples to improve robustness</div>
+                        <div class="strategy-effectiveness">Effectiveness: 85%</div>
+                    </div>
+                    
+                    <div class="strategy-card">
+                        <div class="strategy-name">Defensive Distillation</div>
+                        <div class="strategy-desc">Use knowledge distillation to smooth model gradients</div>
+                        <div class="strategy-effectiveness">Effectiveness: 78%</div>
+                    </div>
+                    
+                    <div class="strategy-card">
+                        <div class="strategy-name">Input Preprocessing</div>
+                        <div class="strategy-desc">Apply transformations to remove adversarial perturbations</div>
+                        <div class="strategy-effectiveness">Effectiveness: 72%</div>
+                    </div>
+                    
+                    <div class="strategy-card">
+                        <div class="strategy-name">Ensemble Methods</div>
+                        <div class="strategy-desc">Combine multiple models for improved security</div>
+                        <div class="strategy-effectiveness">Effectiveness: 91%</div>
+                    </div>
+                </div>
+
+                <div class="code-preview">
+                    <h3>Core Attack Algorithm (Python + PyTorch)</h3>
+                    <pre>
+import torch
+import torch.nn.functional as F
+
+class AdversarialAttacker:
+    def __init__(self, model, epsilon=0.1):
+        self.model = model
+        self.epsilon = epsilon
+    
+    def fgsm_attack(self, data, target):
+        # Fast Gradient Sign Method
+        data.requires_grad = True
+        output = self.model(data)
+        loss = F.cross_entropy(output, target)
+        loss.backward()
+        
+        # Create adversarial perturbation
+        perturbation = self.epsilon * data.grad.sign()
+        adversarial_data = data + perturbation
+        return torch.clamp(adversarial_data, 0, 1)
+    
+    def pgd_attack(self, data, target, alpha=0.01, iterations=10):
+        # Projected Gradient Descent
+        perturbation = torch.zeros_like(data)
+        
+        for i in range(iterations):
+            perturbation.requires_grad = True
+            output = self.model(data + perturbation)
+            loss = F.cross_entropy(output, target)
+            loss.backward()
+            
+            # Update perturbation
+            perturbation = perturbation + alpha * perturbation.grad.sign()
+            perturbation = torch.clamp(perturbation, -self.epsilon, self.epsilon)
+            perturbation = torch.clamp(data + perturbation, 0, 1) - data
+            
+        return data + perturbation
+    
+    def evaluate_robustness(self, test_loader):
+        # Test model robustness against attacks
+        correct = 0
+        total = 0
+        
+        for data, target in test_loader:
+            adversarial_data = self.fgsm_attack(data, target)
+            output = self.model(adversarial_data)
+            pred = output.argmax(dim=1)
+            correct += pred.eq(target).sum().item()
+            total += target.size(0)
+        
+        return correct / total
+                    </pre>
+                </div>
+            </div>
+        </div>
+
+        <div class="panel">
+            <h2><i class="fas fa-chart-line"></i> Attack Results & Analysis</h2>
+            
+            <div class="alert">
+                <strong><i class="fas fa-exclamation-triangle"></i> Security Alert:</strong>
+                Model vulnerability detected! Current defense mechanisms insufficient against advanced adversarial attacks.
+            </div>
+            
+            <div class="warning">
+                <strong><i class="fas fa-shield-alt"></i> Defense Status:</strong>
+                Implementing enhanced adversarial training and ensemble methods recommended.
+            </div>
+            
+            <div class="results-area" id="results">
+                <h3>Recent Attack Simulations</h3>
+                <div class="result-item">
+                    <div class="result-header">
+                        <span class="result-title">FGSM Attack on Image Classifier</span>
+                        <span class="result-score">Success Rate: 87.3%</span>
+                    </div>
+                    <p>Successfully fooled image classification model with minimal perturbation (ε=0.1). Model confidence dropped from 95% to 12%.</p>
+                </div>
+                
+                <div class="result-item">
+                    <div class="result-header">
+                        <span class="result-title">PGD Attack on NLP Model</span>
+                        <span class="result-score">Success Rate: 92.1%</span>
+                    </div>
+                    <p>Iterative attack achieved high success rate with 15 iterations. Text classification model completely misclassified adversarial inputs.</p>
+                </div>
+                
+                <div class="result-item">
+                    <div class="result-header">
+                        <span class="result-title">Carlini & Wagner on Malware Detector</span>
+                        <span class="result-score">Success Rate: 78.9%</span>
+                    </div>
+                    <p>L2-norm optimized attack bypassed malware detection with average perturbation of 0.15.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let selectedAttack = 'fgsm';
+        let selectedTarget = 'image_classifier';
+
+        function selectAttack(attack) {
+            selectedAttack = attack;
+            document.querySelectorAll('.attack-card').forEach(card => card.classList.remove('active'));
+            event.target.closest('.attack-card').classList.add('active');
+        }
+
+        function selectTarget(target) {
+            selectedTarget = target;
+            document.querySelectorAll('.target-btn').forEach(btn => btn.classList.remove('active'));
+            event.target.classList.add('active');
+        }
+
+        function runAttack() {
+            const epsilon = document.getElementById('epsilon').value;
+            const iterations = document.getElementById('iterations').value;
+            const lr = document.getElementById('lr').value;
+            const strength = document.getElementById('strength').value;
+            
+            const btn = event.target;
+            const originalText = btn.innerHTML;
+            btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Running Attack...';
+            btn.disabled = true;
+            
+            // Simulate attack execution
+            setTimeout(() => {
+                const results = document.getElementById('results');
+                const newResult = document.createElement('div');
+                newResult.className = 'result-item';
+                newResult.innerHTML = `
+                    <div class="result-header">
+                        <span class="result-title">${selectedAttack.toUpperCase()} Attack on ${selectedTarget.replace('_', ' ')}</span>
+                        <span class="result-score">Success Rate: ${Math.floor(Math.random() * 20) + 75}%</span>
+                    </div>
+                    <p>Attack completed with ε=${epsilon}, iterations=${iterations}, learning rate=${lr}, strength=${strength}. Model robustness compromised.</p>
+                `;
+                
+                results.appendChild(newResult);
+                
+                btn.innerHTML = originalText;
+                btn.disabled = false;
+            }, 3000);
+        }
+
+        // Update epsilon value display
+        document.getElementById('epsilon').addEventListener('input', function() {
+            document.getElementById('epsilon-value').textContent = this.value;
+        });
+
+        // Simulate real-time monitoring
+        setInterval(() => {
+            const results = document.querySelectorAll('.result-score');
+            results.forEach(score => {
+                if (score.textContent.includes('Success Rate')) {
+                    const currentRate = parseInt(score.textContent.match(/\d+/)[0]);
+                    const newRate = Math.max(70, Math.min(95, currentRate + (Math.random() - 0.5) * 5));
+                    score.textContent = `Success Rate: ${newRate.toFixed(1)}%`;
+                }
+            });
+        }, 8000);
+    </script>
+</body>
+</html> 

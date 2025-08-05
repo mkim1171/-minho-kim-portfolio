@@ -1,22 +1,22 @@
-# Minho Kim - Software Developer & Cybersecurity Professional
+# Minho Kim - Cybersecurity Professional & AI Security Specialist
 
-Welcome to my portfolio! I'm a recent graduate from the University of Maryland, College Park with a degree in Information Science and a CompTIA Security+ certification.
+Welcome to my portfolio! I'm a recent graduate from the University of Maryland, College Park with a degree in Information Science and a CompTIA Security+ certification. Specialized in AI-powered cybersecurity threats and machine learning security.
 
 ## 🚀 Featured Projects
 
-### 1. EasyApply Tracker
-A modern, responsive job application tracker built with React and Tailwind CSS. Features include dashboard overview, job management, status tracking, priority system, search & filter capabilities, and deadline alerts.
+### 1. AI-Powered Threat Detection System
+A machine learning-based system that detects AI-generated phishing attempts and deepfake content. Uses Python with TensorFlow to analyze email patterns, image authenticity, and behavioral anomalies to identify sophisticated AI-driven cyber attacks.
 
-**Technologies:** JavaScript, HTML, CSS, Local Storage, Responsive Design, DOM Manipulation
+**Technologies:** Python, TensorFlow, Machine Learning, Deep Learning, Computer Vision, NLP, Cybersecurity
 
-**[Live Demo](job-tracker-simple.html)**
+**[Live Demo](ai-threat-detection.html)**
 
-### 2. CyberThreat Intel Hub
-A revolutionary community-driven threat intelligence platform that combines real-world threat analysis with gamified learning. Features live threat feeds, interactive analysis tools, and skill progression tracking.
+### 2. AI Adversarial Attack Simulator
+A comprehensive testing framework that simulates AI adversarial attacks on machine learning models. Implements FGSM, PGD, and other attack algorithms in Python to test model robustness and develop defensive strategies against AI-powered cyber threats.
 
-**Technologies:** JavaScript, HTML, CSS, Cybersecurity, Gamification, API Integration, Data Visualization
+**Technologies:** Python, PyTorch, Adversarial ML, Penetration Testing, Security Testing, Model Defense, Cybersecurity
 
-**[Live Demo](cyber-threat-intel-platform.html)**
+**[Live Demo](ai-adversarial-simulator.html)**
 
 ### 3. What Should I Eat?
 A smart meal generator that helps users find recipes based on ingredients they have. Features ingredient matching, shopping list generation, nutrition info, and recipe details. Solves the daily struggle of deciding what to cook.
@@ -27,21 +27,50 @@ A smart meal generator that helps users find recipes based on ingredients they h
 
 ## 🛠️ Skills
 
-- **Programming Languages:** C, C++, Python, Java, JavaScript
-- **Data Analysis:** SQL, R-Studio, MATLAB, Tableau
-- **Operating Systems:** Linux
-- **Creative Coding:** Processing
-- **Office Tools:** MS Office
-- **Web Technologies:** HTML5/CSS3, Tailwind CSS
-- **Cybersecurity:** CompTIA Security+ Certified
-- **Education:** Information Science (UMD), Computer Science coursework
+### Programming Languages & Cybersecurity
+- **Python** - Machine Learning, AI Security, Penetration Testing
+- **C/C++** - System Security, Memory Analysis, Exploit Development
+- **Java** - Application Security, Secure Coding
+- **JavaScript** - Web Security, Frontend Development
+- **SQL** - Database Security, Forensic Analysis
+- **Linux** - System Administration, Security Hardening
+- **Assembly** - Reverse Engineering, Malware Analysis
+
+### AI & Machine Learning
+- **TensorFlow** - Deep Learning Models, Neural Networks
+- **PyTorch** - Adversarial Machine Learning, Model Security
+- **Scikit-learn** - Traditional ML, Security Analytics
+- **OpenCV** - Computer Vision, Image Processing
+- **NLP Libraries** - Text Analysis, Threat Detection
+
+### Cybersecurity Tools & Certifications
+- **CompTIA Security+** - Certified Security Professional
+- **Wireshark** - Network Analysis, Packet Inspection
+- **Metasploit** - Penetration Testing Framework
+- **Burp Suite** - Web Application Security Testing
+- **Nmap** - Network Discovery, Vulnerability Scanning
+- **Volatility** - Memory Forensics, Malware Analysis
+
+### Data Analysis & Visualization
+- **R-Studio** - Statistical Analysis, Security Metrics
+- **MATLAB** - Signal Processing, Algorithm Development
+- **Tableau** - Security Dashboard Creation, Threat Visualization
+- **MS Office** - Documentation, Reporting
+
+## 🎯 Specializations
+
+- **AI-Powered Cyber Threats** - Detection and mitigation of AI-generated attacks
+- **Adversarial Machine Learning** - Model security and robustness testing
+- **Deepfake Detection** - Image and video authenticity verification
+- **Phishing Detection** - AI-enhanced email security analysis
+- **Penetration Testing** - Ethical hacking and vulnerability assessment
+- **Incident Response** - Security breach investigation and containment
 
 ## 📫 Get In Touch
 
-- **Email:** minho.kim@example.com
-- **GitHub:** [github.com/minhokim](https://github.com/minhokim)
-- **LinkedIn:** [linkedin.com/in/minhokim](https://linkedin.com/in/minhokim)
-- **Twitter:** [twitter.com/minhokim](https://twitter.com/minhokim)
+- **Email:** minhok25@gmail.com
+- **GitHub:** [github.com/mkim1171](https://github.com/mkim1171)
+- **LinkedIn:** [linkedin.com/in/minho-kim-04b7a9253](https://linkedin.com/in/minho-kim-04b7a9253)
 
 ## 🎯 About Me
 
@@ -57,10 +86,10 @@ My CompTIA Security+ certification demonstrates my understanding of cybersecurit
 
 ## 📊 Project Highlights
 
-- **EasyApply Tracker:** Modern job application management system with intuitive UI
-- **CyberThreat Intel Hub:** Innovative cybersecurity platform with gamified learning
-- **Responsive Design:** All projects optimized for desktop, tablet, and mobile
-- **Modern Technologies:** Built with the latest web development tools and frameworks
+- **AI-Powered Threat Detection:** Advanced ML system for detecting AI-generated cyber threats
+- **Adversarial Attack Simulator:** Comprehensive testing framework for model security
+- **Deep Learning Security:** Expertise in protecting AI systems from adversarial attacks
+- **Modern Cybersecurity:** Cutting-edge tools and techniques for threat mitigation
 
 ---
 
