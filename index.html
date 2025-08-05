@@ -881,15 +881,15 @@
                 <!-- Quick Contact Form -->
                 <div class="contact-form">
                     <h3>Send me a quick message!</h3>
-                    <form id="contactForm" class="contact-form-inner">
+                    <form id="contactForm" class="contact-form-inner" action="https://formspree.io/f/xpzgwqjq" method="POST">
                         <div class="form-group">
-                            <input type="text" id="name" placeholder="Your Name" required>
+                            <input type="text" id="name" name="name" placeholder="Your Name" required>
                         </div>
                         <div class="form-group">
-                            <input type="email" id="email" placeholder="Your Email" required>
+                            <input type="email" id="email" name="email" placeholder="Your Email" required>
                         </div>
                         <div class="form-group">
-                            <textarea id="message" placeholder="Your Message" rows="4" required></textarea>
+                            <textarea id="message" name="message" placeholder="Your Message" rows="4" required></textarea>
                         </div>
                         <button type="submit" class="submit-btn">
                             <i class="fas fa-paper-plane"></i> Send Message
@@ -925,12 +925,7 @@
         </div>
     </footer>
 
-    <script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@3/dist/email.min.js"></script>
     <script>
-        // Initialize EmailJS
-        (function() {
-            emailjs.init("YOUR_PUBLIC_KEY"); // Replace with your actual EmailJS public key
-        })();
         // Initialize header state
         document.addEventListener('DOMContentLoaded', function() {
             const header = document.querySelector('header');
@@ -1018,56 +1013,58 @@
             });
         });
 
-        // Contact form handling with EmailJS
+        // Contact form handling with Formspree
         document.getElementById('contactForm').addEventListener('submit', function(e) {
             e.preventDefault();
             
             const submitBtn = this.querySelector('.submit-btn');
             const originalText = submitBtn.innerHTML;
             
-            // Get form data
-            const formData = new FormData(this);
-            const name = formData.get('name');
-            const email = formData.get('email');
-            const message = formData.get('message');
-            
             // Show loading state
             submitBtn.innerHTML = '<span class="loading"></span> Sending...';
             submitBtn.disabled = true;
             
-            // Send email using EmailJS
-            emailjs.send('service_your_service_id', 'template_your_template_id', {
-                to_email: 'minhok25@gmail.com',
-                from_name: name,
-                from_email: email,
-                message: message,
-                reply_to: email
+            // Send email using Formspree
+            fetch('https://formspree.io/f/xpzgwqjq', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    name: this.querySelector('input[name="name"]').value,
+                    email: this.querySelector('input[name="email"]').value,
+                    message: this.querySelector('textarea[name="message"]').value
+                })
             })
-            .then(function(response) {
-                // Show success message
-                const successMsg = document.createElement('div');
-                successMsg.className = 'success-message';
-                successMsg.innerHTML = '<i class="fas fa-check-circle"></i> Message sent successfully! I\'ll get back to you soon.';
-                document.getElementById('contactForm').appendChild(successMsg);
-                
-                // Reset form
-                document.getElementById('contactForm').reset();
-                
-                // Reset button
-                submitBtn.innerHTML = originalText;
-                submitBtn.disabled = false;
-                
-                // Hide success message after 5 seconds
-                setTimeout(() => {
-                    successMsg.style.display = 'none';
-                }, 5000);
+            .then(response => {
+                if (response.ok) {
+                    // Show success message
+                    const successMsg = document.createElement('div');
+                    successMsg.className = 'success-message';
+                    successMsg.innerHTML = '<i class="fas fa-check-circle"></i> Message sent successfully! I\'ll get back to you soon.';
+                    this.appendChild(successMsg);
+                    
+                    // Reset form
+                    this.reset();
+                    
+                    // Reset button
+                    submitBtn.innerHTML = originalText;
+                    submitBtn.disabled = false;
+                    
+                    // Hide success message after 5 seconds
+                    setTimeout(() => {
+                        successMsg.style.display = 'none';
+                    }, 5000);
+                } else {
+                    throw new Error('Failed to send message');
+                }
             })
-            .catch(function(error) {
+            .catch(error => {
                 // Show error message
                 const errorMsg = document.createElement('div');
                 errorMsg.className = 'error-message';
                 errorMsg.innerHTML = '<i class="fas fa-exclamation-circle"></i> Failed to send message. Please try again or email me directly at minhok25@gmail.com';
-                document.getElementById('contactForm').appendChild(errorMsg);
+                this.appendChild(errorMsg);
                 
                 // Reset button
                 submitBtn.innerHTML = originalText;
