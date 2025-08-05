@@ -936,7 +936,7 @@
             <div class="resume-content">
                 <p>Interested in learning more about my experience and qualifications? You can view or download my resume below.</p>
                 <div class="resume-options">
-                    <a href="./Minho_Kim_Resume.pdf" class="resume-btn view-btn" target="_blank" onclick="openResume()">
+                    <a href="./Minho_Kim_Resume.pdf" class="resume-btn view-btn" target="_blank">
                         <i class="fas fa-eye"></i> View Resume
                     </a>
                     <a href="./Minho_Kim_Resume.pdf" class="resume-btn download-btn" download="Minho_Kim_Resume.pdf">
@@ -974,13 +974,13 @@
                 </div>
 
                 <div class="social-links">
-                    <a href="mailto:minhok25@gmail.com" class="social-link" title="Email me" style="pointer-events: auto; cursor: pointer;">
+                    <a href="mailto:minhok25@gmail.com" class="social-link" title="Email me">
                         <i class="fas fa-envelope"></i>
                     </a>
-                    <a href="https://github.com/mkim1171" class="social-link" title="GitHub Profile" target="_blank" style="pointer-events: auto; cursor: pointer;">
+                    <a href="https://github.com/mkim1171" class="social-link" title="GitHub Profile" target="_blank">
                         <i class="fab fa-github"></i>
                     </a>
-                    <a href="https://www.linkedin.com/in/minho-kim-04b7a9253" class="social-link" title="LinkedIn Profile" target="_blank" style="pointer-events: auto; cursor: pointer;">
+                    <a href="https://www.linkedin.com/in/minho-kim-04b7a9253" class="social-link" title="LinkedIn Profile" target="_blank">
                         <i class="fab fa-linkedin"></i>
                     </a>
 
@@ -1008,7 +1008,6 @@
             initializeSmoothScrolling();
             initializeScrollEffects();
             initializeContactForm();
-            initializeSocialLinks();
             initializeTypingAnimation();
             initializeProjectCards();
             initializeTouchEffects();
@@ -1175,38 +1174,7 @@
             }
         }
 
-        // Social media links
-        function initializeSocialLinks() {
-            // Email link
-            const emailLink = document.querySelector('.social-links a[href^="mailto:"]');
-            if (emailLink) {
-                emailLink.addEventListener('click', function(e) {
-                    e.preventDefault();
-                    e.stopPropagation();
-                    window.location.href = 'mailto:minhok25@gmail.com';
-                });
-            }
 
-            // GitHub link
-            const githubLink = document.querySelector('.social-links a[href*="github.com"]');
-            if (githubLink) {
-                githubLink.addEventListener('click', function(e) {
-                    e.preventDefault();
-                    e.stopPropagation();
-                    window.open('https://github.com/mkim1171', '_blank');
-                });
-            }
-
-            // LinkedIn link
-            const linkedinLink = document.querySelector('.social-links a[href*="linkedin.com"]');
-            if (linkedinLink) {
-                linkedinLink.addEventListener('click', function(e) {
-                    e.preventDefault();
-                    e.stopPropagation();
-                    window.open('https://www.linkedin.com/in/minho-kim-04b7a9253', '_blank');
-                });
-            }
-        }
 
         // Typing animation
         function initializeTypingAnimation() {
