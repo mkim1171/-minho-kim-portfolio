@@ -602,6 +602,17 @@
             display: none;
         }
 
+        /* Error Message */
+        .error-message {
+            background: linear-gradient(135deg, #ef4444, #dc2626);
+            color: white;
+            padding: 1rem;
+            border-radius: 10px;
+            margin-top: 1rem;
+            text-align: center;
+            display: none;
+        }
+
         /* Footer */
         footer {
             background: #333;
@@ -914,7 +925,12 @@
         </div>
     </footer>
 
+    <script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@3/dist/email.min.js"></script>
     <script>
+        // Initialize EmailJS
+        (function() {
+            emailjs.init("YOUR_PUBLIC_KEY"); // Replace with your actual EmailJS public key
+        })();
         // Initialize header state
         document.addEventListener('DOMContentLoaded', function() {
             const header = document.querySelector('header');
@@ -1002,27 +1018,40 @@
             });
         });
 
-        // Contact form handling
+        // Contact form handling with EmailJS
         document.getElementById('contactForm').addEventListener('submit', function(e) {
             e.preventDefault();
             
             const submitBtn = this.querySelector('.submit-btn');
             const originalText = submitBtn.innerHTML;
             
+            // Get form data
+            const formData = new FormData(this);
+            const name = formData.get('name');
+            const email = formData.get('email');
+            const message = formData.get('message');
+            
             // Show loading state
             submitBtn.innerHTML = '<span class="loading"></span> Sending...';
             submitBtn.disabled = true;
             
-            // Simulate form submission (replace with actual form handling)
-            setTimeout(() => {
+            // Send email using EmailJS
+            emailjs.send('service_your_service_id', 'template_your_template_id', {
+                to_email: 'minhok25@gmail.com',
+                from_name: name,
+                from_email: email,
+                message: message,
+                reply_to: email
+            })
+            .then(function(response) {
                 // Show success message
                 const successMsg = document.createElement('div');
                 successMsg.className = 'success-message';
                 successMsg.innerHTML = '<i class="fas fa-check-circle"></i> Message sent successfully! I\'ll get back to you soon.';
-                this.appendChild(successMsg);
+                document.getElementById('contactForm').appendChild(successMsg);
                 
                 // Reset form
-                this.reset();
+                document.getElementById('contactForm').reset();
                 
                 // Reset button
                 submitBtn.innerHTML = originalText;
@@ -1032,7 +1061,23 @@
                 setTimeout(() => {
                     successMsg.style.display = 'none';
                 }, 5000);
-            }, 2000);
+            })
+            .catch(function(error) {
+                // Show error message
+                const errorMsg = document.createElement('div');
+                errorMsg.className = 'error-message';
+                errorMsg.innerHTML = '<i class="fas fa-exclamation-circle"></i> Failed to send message. Please try again or email me directly at minhok25@gmail.com';
+                document.getElementById('contactForm').appendChild(errorMsg);
+                
+                // Reset button
+                submitBtn.innerHTML = originalText;
+                submitBtn.disabled = false;
+                
+                // Hide error message after 5 seconds
+                setTimeout(() => {
+                    errorMsg.style.display = 'none';
+                }, 5000);
+            });
         });
 
         // Project card click effects
