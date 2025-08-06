@@ -451,6 +451,10 @@
             font-weight: bold;
             transition: all 0.3s ease;
             box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            cursor: pointer;
+            pointer-events: auto;
+            position: relative;
+            z-index: 10;
         }
 
         .view-btn {
@@ -510,6 +514,10 @@
             text-decoration: none;
             transition: transform 0.3s ease;
             box-shadow: 0 4px 12px rgba(255, 107, 107, 0.3);
+            cursor: pointer;
+            pointer-events: auto;
+            position: relative;
+            z-index: 10;
         }
 
         .social-link:hover {
@@ -1011,6 +1019,7 @@
             initializeTypingAnimation();
             initializeProjectCards();
             initializeTouchEffects();
+            initializeResumeButtons();
         });
 
         // Initialize header state
@@ -1246,6 +1255,17 @@
             document.body.appendChild(link);
             link.click();
             document.body.removeChild(link);
+        }
+
+        // Ensure resume buttons are clickable
+        function initializeResumeButtons() {
+            const resumeButtons = document.querySelectorAll('.resume-btn');
+            resumeButtons.forEach(button => {
+                button.addEventListener('click', function(e) {
+                    console.log('Resume button clicked:', this.href);
+                    // Don't prevent default - let the href work
+                });
+            });
         }
 
         // Keyboard navigation
